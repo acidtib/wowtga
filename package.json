@@ -1,0 +1,28 @@
+{
+  "name": "wowtga",
+  "version": "1.0.0",
+  "description": "WoW Screenshots Viewer",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wow",
+    "tga"
+  ],
+  "author": "acidtib",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^13.1.9"
+  },
+  "dependencies": {
+    "@fancyapps/ui": "^4.0.0-beta.1",
+    "@popperjs/core": "^2.9.3",
+    "bootstrap": "^5.1.0",
+    "directory-tree": "^2.3.1",
+    "electron-db": "^0.15.7",
+    "jquery": "^3.6.0",
+    "tga2png": "^0.1.3"
+  }
+}
