@@ -51,7 +51,7 @@ function galleryCard(params) {
     <div class="col">
       <div class="card shadow-sm">
         <a data-src="${params.new_path}" data-fancybox="gallery" data-caption="${params.original_name}" class="pointer">
-          <img  src="${params.new_path}" class="card-img-top zoom img-fluid">
+          <img  src="${params.new_path}" class="card-img-top img-fluid">
         </a>
 
         <div class="card-body">
@@ -69,35 +69,15 @@ function galleryCard(params) {
   `
 }
 
+function loadOriginalScreenshots() {
+  // create array of screenshots
+  const tree = dirTree('D:/wow/Vanilla WoW 1.12.1/Screenshots/', {extensions:/\.tga$/});
+  return tree
+}
+
 $(() => {
-  console.log("hi")
 
-  
-
-  // Fancybox.Fancybox.defaults.btnTpl.delete = '<button data-fancybox-delete class="fancybox-button fancybox-button--delete" title="title of the icon">put yo</button>';
-  // console.log(Fancybox.Fancybox.defaults);
-  // $.fancybox.defaults.buttons = [
-  //   'slideShow',
-  //   'fullScreen',
-  //   'thumbs',
-  //   'delete', // this one is the new button
-  //   'close'];
-
-  // $('body').on('click', '[data-fancybox-delete]', function(e) {
-  //   var src = $.fancybox.getInstance().current.src;
-  //   var idx = $.fancybox.getInstance().current.opts.$orig;    
-    
-  //   console.log(src);
-  //   console.log(idx);
-  // });
-
-  // $(".zoom").hover(function(){
-  //   $(this).addClass('transition');
-  //   }, function(){
-        
-  //   $(this).removeClass('transition');
-  // });
-
+  // load saved gallery
   db.getAll('screenshots', (succ, result) => {
     if (succ) {
       result.sort(dynamicSort("-created_at")).forEach(screenshot => {
@@ -107,9 +87,9 @@ $(() => {
   })
 
 
-  // create array of screenshots
-  const tree = dirTree('D:/wow/Vanilla WoW 1.12.1/Screenshots/', {extensions:/\.tga$/});
-  console.log(tree);
+  // load original screenshots
+  const originalScreenshots = loadOriginalScreenshots()
+  console.log(originalScreenshots);
 
   // // grab screenshot data
   // tree.children.sort(dynamicSort("-name")).forEach(screenshot => {
