@@ -23,6 +23,7 @@
     "directory-tree": "^2.3.1",
     "electron-db": "^0.15.7",
     "jquery": "^3.6.0",
+    "lozad": "^1.16.0",
     "moment": "^2.29.1",
     "tga2png": "^0.1.3"
   }

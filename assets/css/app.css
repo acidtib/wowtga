@@ -28,3 +28,8 @@ body {
   transition: opacity 0.2s ease;
   opacity: 0;
 }
+
+
+.screenshot-list .card-img-top {
+  min-height: 158px;
+}

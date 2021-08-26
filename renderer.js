@@ -17,6 +17,8 @@ const db = require('electron-db')
 const tga2png = require('tga2png')
 const moment = require('moment')
 const { log } = require('console')
+const lozad = require('lozad')
+
 
 const appUserData = app.getPath('userData')
 
@@ -81,7 +83,7 @@ function galleryCard(params) {
     <div class="col">
       <div class="card shadow-sm">
         <a data-src="${params.new_path}" data-fancybox="gallery" data-caption="${params.original_name}" class="pointer">
-          <img  src="${params.new_path}" class="card-img-top img-fluid">
+          <img data-src="${params.new_path}" class="card-img-top img-fluid lozad">
         </a>
 
         <div class="card-body">
@@ -110,13 +112,19 @@ function loadOriginalScreenshots() {
   return tree
 }
 
+
+
 $(() => {
+  
+  const observer = lozad();
+  observer.observe();
 
   // load saved gallery
   db.getAll('screenshots', (succ, result) => {
     if (succ) {
       result.sort(dynamicSort("-created_at")).forEach(screenshot => {
         insertGalleryCard(screenshot)
+        observer.observe();
       })
     }
   })
@@ -130,7 +138,7 @@ $(() => {
     // show no screenshot view
   } else {
     // grab screenshot data
-    originalScreenshots.children.sort(dynamicSort("-name")).forEach(screenshot => {
+    originalScreenshots.children.sort(dynamicSort("name")).forEach(screenshot => {
       // try to find a duplicate in the database
       db.getRows('screenshots', {
         original_name: screenshot.name.replace(screenshot.extension, '')
@@ -176,6 +184,7 @@ $(() => {
                 db.insertTableContent('screenshots', obj, (succ, msg) => {
                   
                   insertGalleryCard(obj)
+                  observer.observe();
                 })
               }    
             }, err => {
@@ -282,5 +291,9 @@ $(() => {
   // Fancybox.Fancybox.bind('[data-fancybox="gallery"]', {
   //   closeButton : false,
   // });
+
+
+  
+  
 
 })
