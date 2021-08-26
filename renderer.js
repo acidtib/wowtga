@@ -6,22 +6,23 @@
 // process.
 
 delete module.exports
-const fs = require('fs');
-const { remote } = require('electron');
-const app = remote.app;
-window.$ = window.jQuery = require('jquery');
+const fs = require('fs')
+const { remote } = require('electron')
+const app = remote.app
+window.$ = window.jQuery = require('jquery')
 const Fancybox = require('@fancyapps/ui')
-const bootstrap = require('bootstrap');
-const dirTree = require("directory-tree");
-const db = require('electron-db');
-const tga2png = require('tga2png');
-const { log } = require('console');
+const bootstrap = require('bootstrap')
+const dirTree = require("directory-tree")
+const db = require('electron-db')
+const tga2png = require('tga2png')
+const moment = require('moment')
+const { log } = require('console')
 
 const appUserData = app.getPath('userData')
 
 // create directory for coverted screenshots
-const saveDirectory = appUserData.replace(/\\/g, '/') + "/images/"
-if (!fs.existsSync(saveDirectory)){
+const saveDirectory = appUserData.replace(/\\/g, '/') + "/screenshots/"
+if (!fs.existsSync(saveDirectory)) {
   fs.mkdirSync(saveDirectory);
 }
 
@@ -43,6 +44,7 @@ function dynamicSort(property) {
   }
 }
 
+// https://momane.com/how-to-copy-image-and-text-to-clipboard-with-javascript
 function imageToBlob(imageURL) {
   const img = new Image;
   const c = document.createElement("canvas");
@@ -89,12 +91,17 @@ function galleryCard(params) {
               <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
               <button type="button" class="btn btn-sm btn-outline-secondary copy-image" data-path="${params.new_path}">Copy</button>
             </div>
-            <small class="text-muted">${params.created_at}</small>
+            <small class="text-muted">${formatDate(params.created_at)}</small>
           </div>
         </div>
       </div>
     </div>
   `
+}
+
+function formatDate(date) {
+  const m = moment(date)
+  return m.format('MM/DD/YYYY h:mm a')
 }
 
 function loadOriginalScreenshots() {
