@@ -91,6 +91,90 @@ $(() => {
   const originalScreenshots = loadOriginalScreenshots()
   console.log(originalScreenshots);
 
+  if (originalScreenshots.children.length == 0) {
+    // show no screenshot view
+  } else {
+    // grab screenshot data
+    originalScreenshots.children.sort(dynamicSort("-name")).forEach(screenshot => {
+      // try to find a duplicate in the database
+      db.getRows('screenshots', {
+        original_name: screenshot.name.replace(screenshot.extension, '')
+      }, (succ, result) => {
+        if (succ) {
+          // if its new lets insert it
+          if (result.length == 0) {
+
+            let obj = new Object();
+            obj.original_name = screenshot.name.replace(screenshot.extension, '');
+            obj.original_extension = screenshot.extension;
+            obj.original_size = screenshot.size;
+            obj.original_path = screenshot.path.replace(/\\/g, '/');
+
+            const savePath = saveDirectory + obj.original_name + ".png"
+
+            obj.new_path = savePath;
+            
+            const now = new Date()
+            let created_at = now
+
+            if (obj.original_name.includes("WoWScrnShot")) {
+              const date = obj.original_name.split("_")[1].match(/.{1,2}/g) || []
+              const year = "20" + date[2]
+              const month = date[0] - 1
+              const day = date[1]
+              
+              const time = obj.original_name.split("_")[2].match(/.{1,2}/g) || []
+              const hour = time[0]
+              const minute = time[1]
+              const second = time[2]
+
+              const parsedDate = new Date(year, month, day, hour, minute, second)
+
+              created_at = parsedDate
+            }
+
+            obj.created_at = created_at;
+            obj.updated_at = created_at;
+
+            tga2png(obj.original_path, savePath).then(buf=> {
+              if (db.valid('screenshots')) {
+                db.insertTableContent('screenshots', obj, (succ, msg) => {
+
+                  $(".screenshot-list").prepend(`
+                    <div class="col">
+                      <div class="card shadow-sm">
+                        <a data-src="${obj.new_path}" data-fancybox="gallery" data-caption="${obj.original_name}">
+                          <img  src="${obj.new_path}" class="card-img-top zoom img-fluid">
+                        </a>
+
+                        <div class="card-body">
+                          <p class="card-text">${obj.original_name}</p>
+                          <div class="d-flex justify-content-between align-items-center">
+                            <div class="btn-group">
+                              <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+                              <button type="button" class="btn btn-sm btn-outline-secondary">Copy</button>
+                            </div>
+                            <small class="text-muted">${obj.created_at}</small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  `);
+                })
+              }    
+            }, err => {
+              console.log('error converting screenshot', err);
+            });
+
+          }
+
+        } else {
+          console.log('An error has occured. ' + result)
+        }
+      })
+    })
+  }
+
   // // grab screenshot data
   // tree.children.sort(dynamicSort("-name")).forEach(screenshot => {
   //   // try to find a duplicate in the database
