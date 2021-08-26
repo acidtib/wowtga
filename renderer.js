@@ -15,6 +15,7 @@ const bootstrap = require('bootstrap');
 const dirTree = require("directory-tree");
 const db = require('electron-db');
 const tga2png = require('tga2png');
+const { log } = require('console');
 
 const appUserData = app.getPath('userData')
 
@@ -42,6 +43,33 @@ function dynamicSort(property) {
   }
 }
 
+function imageToBlob(imageURL) {
+  const img = new Image;
+  const c = document.createElement("canvas");
+  const ctx = c.getContext("2d");
+  img.crossOrigin = "";
+  img.src = imageURL;
+  return new Promise(resolve => {
+    img.onload = function () {
+      c.width = this.naturalWidth;
+      c.height = this.naturalHeight;
+      ctx.drawImage(this, 0, 0);
+      c.toBlob((blob) => {
+        // here the image is a blob
+        resolve(blob)
+      }, "image/png", 0.75);
+    };
+  })
+}
+
+async function copyImage(imageURL){
+  const blob = await imageToBlob(imageURL)
+  const item = new ClipboardItem({ "image/png": blob });
+  navigator.clipboard.write([item]);
+}
+
+
+
 function insertGalleryCard(params) {
   $(".screenshot-list").append(galleryCard(params));
 }
@@ -59,7 +87,7 @@ function galleryCard(params) {
           <div class="d-flex justify-content-between align-items-center">
             <div class="btn-group">
               <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-              <button type="button" class="btn btn-sm btn-outline-secondary">Copy</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary copy-image" data-path="${params.new_path}">Copy</button>
             </div>
             <small class="text-muted">${params.created_at}</small>
           </div>
@@ -139,27 +167,8 @@ $(() => {
             tga2png(obj.original_path, savePath).then(buf=> {
               if (db.valid('screenshots')) {
                 db.insertTableContent('screenshots', obj, (succ, msg) => {
-
-                  $(".screenshot-list").prepend(`
-                    <div class="col">
-                      <div class="card shadow-sm">
-                        <a data-src="${obj.new_path}" data-fancybox="gallery" data-caption="${obj.original_name}">
-                          <img  src="${obj.new_path}" class="card-img-top zoom img-fluid">
-                        </a>
-
-                        <div class="card-body">
-                          <p class="card-text">${obj.original_name}</p>
-                          <div class="d-flex justify-content-between align-items-center">
-                            <div class="btn-group">
-                              <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-                              <button type="button" class="btn btn-sm btn-outline-secondary">Copy</button>
-                            </div>
-                            <small class="text-muted">${obj.created_at}</small>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  `);
+                  
+                  insertGalleryCard(obj)
                 })
               }    
             }, err => {
@@ -174,6 +183,12 @@ $(() => {
       })
     })
   }
+
+
+  $('.copy-image').on('click', function() {
+    console.log($(this).data("path"));
+    copyImage($(this).data("path"))
+  });
 
   // // grab screenshot data
   // tree.children.sort(dynamicSort("-name")).forEach(screenshot => {
