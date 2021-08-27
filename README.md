@@ -4,6 +4,8 @@ WoWTGA is an electron.js application that converts .tga file format screenshots 
 
 Please feel free to open usability issues.
 
+![](https://raw.githubusercontent.com/arubinofaux/wowtga/main/screenshot.png)
+
 ## Development Quick Start
 
 ```sh
