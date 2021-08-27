@@ -70,6 +70,8 @@ async function copyImage(imageURL){
   const blob = await imageToBlob(imageURL)
   const item = new ClipboardItem({ "image/png": blob });
   navigator.clipboard.write([item]);
+
+  new Notification("WoWTGA", { body: "Screenshot copied to clipboard" })
 }
 
 
@@ -208,14 +210,14 @@ $(() => {
   });
 
   $('.show-grid').on('click', function() {
-    $(this).removeClass("action");
-    $('.show-list').addClass("action");
+    $('.show-list').removeClass("active");
+    $(this).addClass("active");
     $('.screenshot-list').addClass("row-cols-1 row-cols-sm-2 row-cols-md-3");
   });
 
   $('.show-list').on('click', function() {
-    $(this).removeClass("action");
-    $('.show-grid').addClass("action");
+    $('.show-grid').removeClass("active");
+    $(this).addClass("active");
     $('.screenshot-list').removeClass("row-cols-sm-2 row-cols-md-3");
   });
 
