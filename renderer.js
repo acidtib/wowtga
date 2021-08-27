@@ -202,8 +202,21 @@ $(() => {
   }
 
 
+
   $('.copy-image').on('click', function() {
     copyImage($(this).data("path"))
+  });
+
+  $('.show-grid').on('click', function() {
+    $(this).removeClass("action");
+    $('.show-list').addClass("action");
+    $('.screenshot-list').addClass("row-cols-1 row-cols-sm-2 row-cols-md-3");
+  });
+
+  $('.show-list').on('click', function() {
+    $(this).removeClass("action");
+    $('.show-grid').addClass("action");
+    $('.screenshot-list').removeClass("row-cols-sm-2 row-cols-md-3");
   });
 
 })
