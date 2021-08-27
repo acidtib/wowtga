@@ -64,19 +64,18 @@
           "config": {}
         }
       ],
-      "publishers": {
-        "name": "@electron-forge/publisher-github",
-        "platforms": [
-          "win32"
-        ],
-        "config": {
-          "repository": {
-            "owner": "arubinofaux",
-            "name": "wowtga"
-          },
-          "draft": true
+      "publishers": [
+        {
+          "name": "@electron-forge/publisher-github",
+          "config": {
+            "repository": {
+              "owner": "arubinofaux",
+              "name": "wowtga"
+            },
+            "draft": true
+          }
         }
-      }
+      ]
     }
   }
 }
