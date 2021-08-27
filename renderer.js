@@ -14,6 +14,7 @@ const Fancybox = require('@fancyapps/ui')
 const bootstrap = require('bootstrap')
 const dirTree = require("directory-tree")
 const db = require('electron-db')
+const path = require('path')
 const tga2png = require('tga2png')
 const moment = require('moment')
 const { log } = require('console')
@@ -71,7 +72,7 @@ async function copyImage(imageURL){
   const item = new ClipboardItem({ "image/png": blob });
   navigator.clipboard.write([item]);
 
-  new Notification("WoWTGA", { body: "Screenshot copied to clipboard" })
+  new Notification("WoWTGA", { body: "Screenshot copied to clipboard", icon: path.join(__dirname, 'assets/img/icon.png') })
 }
 
 
