@@ -77,6 +77,7 @@ async function copyImage(imageURL){
 function insertGalleryCard(params) {
   $(".screenshot-list").append(galleryCard(params));
   $('.loading').hide()
+  $('.screenshot-list').css("display", "flex");
 }
 
 function galleryCard(params) {
@@ -133,7 +134,6 @@ $(() => {
 
   // load original screenshots
   const originalScreenshots = loadOriginalScreenshots()
-  console.log(originalScreenshots);
 
   if (originalScreenshots.children.length == 0) {
     // show no screenshot view

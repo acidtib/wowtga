@@ -20,6 +20,14 @@ body {
 }
 
 
+.main-content {
+  padding: 60px 15px 0;
+}
+
+.main-content .screenshot-list {
+  display: none;
+}
+
 
 .fancybox__top {
   flex: 0 0 48px;
