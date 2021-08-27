@@ -9,6 +9,9 @@ body {
   color:#989898;
 }
 
+nav.top-nav {
+  display: none;
+}
 
 .nav-link.active {
   border-bottom: 1px solid;

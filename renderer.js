@@ -7,7 +7,7 @@
 
 delete module.exports
 const fs = require('fs')
-const { remote } = require('electron')
+const { remote, shell } = require('electron')
 const app = remote.app
 window.$ = window.jQuery = require('jquery')
 const Fancybox = require('@fancyapps/ui')
@@ -120,6 +120,8 @@ function loadOriginalScreenshots() {
 
 
 $(() => {
+  // display top nav
+  $('nav.top-nav').show()
   
   const observer = lozad();
   observer.observe();
@@ -205,21 +207,28 @@ $(() => {
   }
 
 
+  // open screenshots directory
+  $('.open-screenshots-dir').on('click', function() {
+    shell.openPath(saveDirectory)
+  });
 
+  // copy screenshot button
   $('.copy-image').on('click', function() {
     copyImage($(this).data("path"))
   });
 
+  // share screenshot button
   $('.share-image').on('click', function() {
     alert("Coming Soon")
   });
 
+  // change display view to grid
   $('.show-grid').on('click', function() {
     $('.show-list').removeClass("active");
     $(this).addClass("active");
     $('.screenshot-list').addClass("row-cols-1 row-cols-sm-2 row-cols-md-3");
   });
-
+  // change display view to list
   $('.show-list').on('click', function() {
     $('.show-grid').removeClass("active");
     $(this).addClass("active");

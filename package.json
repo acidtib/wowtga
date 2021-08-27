@@ -1,5 +1,6 @@
 {
   "name": "wowtga",
+  "productName": "WoWTGA",
   "version": "1.0.0",
   "description": "WoW Screenshots Viewer",
   "main": "main.js",
