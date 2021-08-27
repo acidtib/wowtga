@@ -4,8 +4,11 @@
   "description": "WoW Screenshots Viewer",
   "main": "main.js",
   "scripts": {
-    "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron-forge start",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish"
   },
   "keywords": [
     "wow",
@@ -14,6 +17,12 @@
   "author": "acidtib",
   "license": "ISC",
   "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.59",
+    "@electron-forge/maker-deb": "^6.0.0-beta.59",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.59",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.59",
+    "@electron-forge/maker-zip": "^6.0.0-beta.59",
+    "@electron-forge/publisher-github": "^6.0.0-beta.59",
     "electron": "^13.1.9"
   },
   "dependencies": {
@@ -22,9 +31,52 @@
     "bootstrap": "^5.1.0",
     "directory-tree": "^2.3.1",
     "electron-db": "^0.15.7",
+    "electron-squirrel-startup": "^1.0.0",
     "jquery": "^3.6.0",
     "lozad": "^1.16.0",
     "moment": "^2.29.1",
     "tga2png": "^0.1.3"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "WoWTGA",
+            "exe": "WoWTGA.exe",
+            "setupExe": "WoWTGA.Setup.exe"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ],
+      "publishers": {
+        "name": "@electron-forge/publisher-github",
+        "platforms": [
+          "win32"
+        ],
+        "config": {
+          "repository": {
+            "owner": "arubinofaux",
+            "name": "wowtga"
+          },
+          "draft": true
+        }
+      }
+    }
   }
 }
