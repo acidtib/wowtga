@@ -95,7 +95,7 @@ function galleryCard(params) {
           <p class="card-text">${params.original_name}</p>
           <div class="d-flex justify-content-between align-items-center">
             <div class="btn-group">
-              <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
+              <button type="button" class="btn btn-sm btn-outline-secondary share-image">Share</button>
               <button type="button" class="btn btn-sm btn-outline-secondary copy-image" data-path="${params.new_path}">Copy</button>
             </div>
             <small class="text-muted">${formatDate(params.created_at)}</small>
@@ -208,6 +208,10 @@ $(() => {
 
   $('.copy-image').on('click', function() {
     copyImage($(this).data("path"))
+  });
+
+  $('.share-image').on('click', function() {
+    alert("Coming Soon")
   });
 
   $('.show-grid').on('click', function() {
