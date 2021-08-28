@@ -9,6 +9,7 @@ delete module.exports
 const fs = require('fs')
 const { remote, shell } = require('electron')
 const app = remote.app
+const dialog = remote.dialog
 window.$ = window.jQuery = require('jquery')
 const Fancybox = require('@fancyapps/ui')
 const bootstrap = require('bootstrap')
@@ -19,7 +20,7 @@ const tga2png = require('tga2png')
 const moment = require('moment')
 const { log } = require('console')
 const lozad = require('lozad')
-
+const observer = lozad();
 
 const appUserData = app.getPath('userData')
 
@@ -28,6 +29,10 @@ const saveDirectory = appUserData.replace(/\\/g, '/') + "/screenshots/"
 if (!fs.existsSync(saveDirectory)) {
   fs.mkdirSync(saveDirectory);
 }
+
+const setDirModal = new bootstrap.Modal(document.getElementById('setDirModal'), {
+  keyboard: false
+})
 
 
 
@@ -111,40 +116,18 @@ function formatDate(date) {
   return m.format('MM/DD/YYYY h:mm a')
 }
 
-function loadOriginalScreenshots() {
+function loadOriginalScreenshots(path) {
   // create array of screenshots
-  const tree = dirTree('D:/wow/Vanilla WoW 1.12.1/Screenshots/', {extensions:/\.tga$/});
+  const tree = dirTree(path + 'Screenshots/', {extensions:/\.tga$/});
   return tree
 }
 
-
-
-$(() => {
-  // display top nav
-  $('nav.top-nav').show()
-  
-  const observer = lozad();
-  observer.observe();
-
-  // load saved gallery
-  db.getAll('screenshots', (succ, result) => {
-    if (succ) {
-      result.sort(dynamicSort("-created_at")).forEach(screenshot => {
-        insertGalleryCard(screenshot)
-        observer.observe();
-      })
-    }
-  })
-
-
-  // load original screenshots
-  const originalScreenshots = loadOriginalScreenshots()
-
-  if (originalScreenshots.children.length == 0) {
+function convertScreenshots(data) {
+  if (data.length == 0) {
     // show no screenshot view
   } else {
     // grab screenshot data
-    originalScreenshots.children.sort(dynamicSort("name")).forEach(screenshot => {
+    data.sort(dynamicSort("name")).forEach(screenshot => {
       // try to find a duplicate in the database
       db.getRows('screenshots', {
         original_name: screenshot.name.replace(screenshot.extension, '')
@@ -205,6 +188,71 @@ $(() => {
       })
     })
   }
+}
+
+function checkSettings() {
+  db.getRows('settings', {
+    name: "wow_directory"
+  }, (succ, result) => {
+    // check for a wow directory
+    if (result[0].value.length == 0) {      
+      setDirModal.show()
+    } else {
+      // start scan
+      // load original screenshots
+      const originalScreenshots = loadOriginalScreenshots(result[0].value)
+      console.log(originalScreenshots);
+
+      if (originalScreenshots.children) {
+        convertScreenshots(originalScreenshots.children)  
+        // display top nav
+        $('nav.top-nav').show()
+      }
+    }
+  })
+}
+
+function setDir() {
+  dialog.showOpenDialog({
+    properties: ['openDirectory']
+  }).then(result => {
+    if (result.canceled == false) {
+      const dir = result.filePaths[0].replace(/\\/g, '/') + "/"
+      $('.setDirModal .select-dir').val(dir)
+
+      let where = {
+        "name": "wow_directory"
+      };
+      
+      let set = {
+        "value": dir
+      }
+
+      db.updateRow('settings', where, set, (succ, msg) => {
+        if (succ) {
+          remote.getCurrentWindow().reload();
+        }
+      });
+    }
+  }).catch(err => {
+    console.log(err)
+  })
+}
+
+$(() => {
+  checkSettings()
+  
+  observer.observe();
+
+  // load saved gallery
+  db.getAll('screenshots', (succ, result) => {
+    if (succ) {
+      result.sort(dynamicSort("-created_at")).forEach(screenshot => {
+        insertGalleryCard(screenshot)
+        observer.observe();
+      })
+    }
+  })
 
 
   // open screenshots directory
@@ -235,4 +283,9 @@ $(() => {
     $('.screenshot-list').removeClass("row-cols-sm-2 row-cols-md-3");
   });
 
+
+  $('.setDirModal button').on('click', function() { setDir() });
+  $('.setDirModal .select-dir').on('click', function() { setDir() });
+
+  $('.setDirModal .save').on('click', function() { saveDir() });
 })

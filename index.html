@@ -65,6 +65,26 @@
 
       <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 py-4 g-3 screenshot-list"> </div>
 
+      <!-- Modal -->
+      <div class="modal fade setDirModal" id="setDirModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="setDirModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content rounded-5 shadow">
+            <div class="modal-header p-5 pb-4 border-bottom-0">
+              <h2 class="fw-bold mb-0">Set WoW Directory</h2>
+            </div>
+
+            <div class="modal-body p-5 pt-0">
+                <div class="input-group mb-3">
+                  <button class="btn btn-outline-secondary" type="button" id="button-addon1">Choose Folder</button>
+                  <input type="text" class="form-control select-dir">
+                </div>
+
+                <small class="text-muted">Select the destination of your WoW 1.12 Client</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <script type="module" src="./renderer.js"></script>
