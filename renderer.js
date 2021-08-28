@@ -260,6 +260,11 @@ $(() => {
     shell.openPath(saveDirectory)
   });
 
+  // refresh view
+  $('.refresh').on('click', function() {
+    remote.getCurrentWindow().reload();
+  });
+
   // copy screenshot button
   $('.copy-image').on('click', function() {
     copyImage($(this).data("path"))
