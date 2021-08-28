@@ -22,6 +22,9 @@ nav.top-nav {
   cursor: pointer;
 }
 
+.nothing-found {
+  display: none;
+}
 
 .main-content {
   padding: 60px 15px 0;

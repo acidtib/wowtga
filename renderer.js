@@ -198,16 +198,23 @@ function checkSettings() {
     if (result[0].value.length == 0) {      
       setDirModal.show()
     } else {
-      // start scan
       // load original screenshots
       const originalScreenshots = loadOriginalScreenshots(result[0].value)
       console.log(originalScreenshots);
 
-      if (originalScreenshots.children) {
-        convertScreenshots(originalScreenshots.children)  
-        // display top nav
-        $('nav.top-nav').show()
+      if (originalScreenshots == null) {
+        $(".loading").hide()
+        $(".nothing-found").show()
+      } else {
+        if (originalScreenshots.children) {
+          if (originalScreenshots.children.length !== 0) {
+            convertScreenshots(originalScreenshots.children)  
+          }
+        }
       }
+
+      // display top nav
+      $('nav.top-nav').show()
     }
   })
 }
