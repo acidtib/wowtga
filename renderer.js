@@ -80,17 +80,18 @@ async function copyImage(imageURL){
   new Notification("WoWTGA", { body: "Screenshot copied to clipboard", icon: path.join(__dirname, 'assets/img/icon.png') })
 }
 
-
-
 function insertGalleryCard(params) {
   $(".screenshot-list").append(galleryCard(params));
+  
+  $(".screenshot-list .col").sort(sortByTime).appendTo('.screenshot-list')
+  
   $('.loading').hide()
   $('.screenshot-list').css("display", "flex");
 }
 
 function galleryCard(params) {
   return `
-    <div class="col">
+    <div class="col" data-time="${formatDateEpoch(params.created_at)}">
       <div class="card shadow-sm">
         <a data-src="${params.new_path}" data-fancybox="gallery" data-caption="${params.original_name}" class="pointer">
           <img data-src="${params.new_path}" class="card-img-top img-fluid lozad">
@@ -111,9 +112,18 @@ function galleryCard(params) {
   `
 }
 
+function sortByTime(a, b){
+  return ($(b).data('time')) < ($(a).data('time')) ? -1 : 1;    
+}
+
 function formatDate(date) {
   const m = moment(date)
   return m.format('MM/DD/YYYY h:mm a')
+}
+
+function formatDateEpoch(date) {
+  const m = moment(date)
+  return m.valueOf()
 }
 
 function loadOriginalScreenshots(path) {
